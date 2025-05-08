@@ -833,12 +833,12 @@ components:
       type: object
       description: Describes an available speech-to-text model, its provider, capabilities, and characteristics.
       properties:
+        id:
+          $ref: "#/components/schemas/TranscriptionModelIdentifier"
+          description: The unique identifier for this model (`provider.model_name`).
         provider:
           $ref: "#/components/schemas/TranscriptionProvider"
           description: The provider of this model.
-        identifier:
-          $ref: "#/components/schemas/TranscriptionModelIdentifier"
-          description: The unique identifier for this model (`provider.model_name`).
         display_name:
           type: string
           description: A user-friendly name for the model.
