@@ -150,6 +150,8 @@ paths:
           $ref: "#/components/responses/BadRequest"
         "401":
           $ref: "#/components/responses/Unauthorized"
+        "402":
+          $ref: "#/components/responses/PaymentRequired"
         "404":
           $ref: "#/components/responses/NotFound" # Could be for an invalid ruleset_id
         "429":
@@ -192,6 +194,8 @@ paths:
           $ref: "#/components/responses/BadRequest"
         "401":
           $ref: "#/components/responses/Unauthorized"
+        "402":
+          $ref: "#/components/responses/PaymentRequired"
         "404":
           $ref: "#/components/responses/NotFound" # Could be if the remote URL is invalid/inaccessible
         "429":
@@ -266,6 +270,8 @@ paths:
           $ref: "#/components/responses/BadRequest"
         "401":
           $ref: "#/components/responses/Unauthorized"
+        "402":
+          $ref: "#/components/responses/PaymentRequired"
         "404":
           $ref: "#/components/responses/NotFound"
         "429":
@@ -339,6 +345,8 @@ paths:
           $ref: "#/components/responses/BadRequest"
         "401":
           $ref: "#/components/responses/Unauthorized"
+        "402":
+          $ref: "#/components/responses/PaymentRequired"
         "404":
           $ref: "#/components/responses/NotFound"
         "429":
@@ -411,6 +419,8 @@ paths:
           $ref: "#/components/responses/BadRequest"
         "401":
           $ref: "#/components/responses/Unauthorized"
+        "402":
+          $ref: "#/components/responses/PaymentRequired"
         "429":
           $ref: "#/components/responses/TooManyRequests"
         "500":
@@ -458,6 +468,8 @@ paths:
           $ref: "#/components/responses/BadRequest"
         "401":
           $ref: "#/components/responses/Unauthorized"
+        "402":
+          $ref: "#/components/responses/PaymentRequired"
         "404":
           $ref: "#/components/responses/NotFound"
         "429":
@@ -1408,6 +1420,13 @@ components:
             $ref: "#/components/schemas/ErrorResponse"
           example:
             { "message": "Authentication required. No API key provided.", "code": "unauthenticated" }
+    PaymentRequired:
+      description: Payment Required - There is no credit left on your account.
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
+          example: { "message": "No credit left on your account. Please add credit to your account.", "code": "payment_required" }
     NotFound:
       description: Not Found - The requested resource could not be found. This could be an invalid API endpoint path, or a referenced resource ID (like `ruleset_id`) that doesn't exist. For `/transcribe-remote`, it could also mean the `file_url` was inaccessible.
       content:
