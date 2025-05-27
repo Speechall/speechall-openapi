@@ -245,28 +245,6 @@ paths:
               schema:
                 type: string
                 example: "This is the transcribed text."
-            application/srt: # Correct MIME type for SRT
-              schema:
-                type: string
-                example: |
-                  1
-                  00:00:01,000 --> 00:00:03,500
-                  This is the first segment.
-
-                  2
-                  00:00:04,100 --> 00:00:06,800
-                  This is the second segment.
-            text/vtt: # Common MIME type for VTT
-              schema:
-                type: string
-                example: |
-                  WEBVTT
-
-                  00:01.000 --> 00:03.500
-                  This is the first segment.
-
-                  00:04.100 --> 00:06.800
-                  This is the second segment.
         "400":
           $ref: "#/components/responses/BadRequest"
         "401":
@@ -320,28 +298,6 @@ paths:
               schema:
                 type: string
                 example: "This is the translated English text."
-            application/srt:
-              schema:
-                type: string
-                example: |
-                  1
-                  00:00:01,000 --> 00:00:05,000
-                  This is the translated first segment.
-
-                  2
-                  00:00:06,100 --> 00:00:09,800
-                  And the second translated segment.
-            text/vtt:
-              schema:
-                type: string
-                example: |
-                  WEBVTT
-
-                  00:01.000 --> 00:05.000
-                  This is the translated first segment.
-
-                  00:06.100 --> 00:09.800
-                  And the second translated segment.
         "400":
           $ref: "#/components/responses/BadRequest"
         "401":
@@ -812,7 +768,7 @@ components:
           type: object
           additionalProperties: true
           description: An optional object containing additional metadata returned directly from the underlying STT provider. The structure of this object is provider-dependent.
-          example: { "deepgram_request_id": "abc-123", "confidence": 0.98 }
+          deprecated: true
     TranscriptionResponse:
       description: Represents the JSON structure returned when a JSON-based `output_format` (`json` or `json_text`) is requested. It can be either a detailed structure or a simple text-only structure.
       oneOf:
