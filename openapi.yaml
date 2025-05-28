@@ -1364,7 +1364,6 @@ components:
         Successful transcription response. The content type and structure depend on the `output_format` parameter specified in the request.
         - `application/json`: Returned for `output_format=json` or `json_text`. See `TranscriptionResponse` schema (`TranscriptionDetailed` or `TranscriptionOnlyText`).
         - `text/plain`: Returned for `output_format=text`.
-        - `application/srt` or `text/vtt`: Returned for `output_format=srt` or `vtt` respectively (as plain text).
       content:
         application/json:
           schema:
@@ -1374,30 +1373,6 @@ components:
             type: string
             description: The transcription output as plain text (used for `output_format=text`).
             example: "This is the full transcription text."
-        application/srt:
-          schema:
-            type: string
-            description: The transcription in SubRip subtitle format (used for `output_format=srt`).
-            example: |
-              1
-              00:00:00,500 --> 00:00:02,100
-              Hello world.
-
-              2
-              00:00:02,500 --> 00:00:04,800
-              This is a test.
-        text/vtt: # Using text/vtt as common MIME type
-          schema:
-            type: string
-            description: The transcription in WebVTT subtitle format (used for `output_format=vtt`).
-            example: |
-              WEBVTT
-
-              00:00.500 --> 00:02.100
-              Hello world.
-
-              00:02.500 --> 00:04.800
-              This is a test.
     BadRequest:
       description: Bad Request - The request was malformed or contained invalid parameters (e.g., invalid language code, missing required field, unsupported option). The response body provides details.
       content:
