@@ -837,34 +837,102 @@ components:
     SpeechToTextModel:
       type: object
       description: Describes an available speech-to-text model, its provider, capabilities, and characteristics.
+      required:
+        - id
+        - display_name
+        - provider
+        - is_available
+        - supports_srt
+        - supports_vtt
       properties:
         id:
           $ref: "#/components/schemas/TranscriptionModelIdentifier"
           description: The unique identifier for this model (`provider.model_name`).
-        provider:
-          $ref: "#/components/schemas/TranscriptionProvider"
-          description: The provider of this model.
         display_name:
           type: string
           description: A user-friendly name for the model.
           example: "Deepgram Nova 2 - General"
+        provider:
+          $ref: "#/components/schemas/TranscriptionProvider"
+          description: The provider of this model.
         description:
           type: string
+          nullable: true
           description: A brief description of the model, its intended use case, or version notes.
           example: "Deepgram's latest general-purpose transcription model, optimized for various audio types."
+        cost_per_second_usd:
+          type: number
+          format: double
+          nullable: true
+          description: The cost per second of audio processed in USD.
+          example: 0.0043
+        is_available:
+          type: boolean
+          description: Indicates whether the model is currently available for use.
+          default: true
+          example: true
+        supported_languages:
+          type: array
+          nullable: true
+          description: >
+            A list of language codes (preferably BCP 47, e.g., "en-US", "en-GB", "es-ES")
+            supported by this model. May include `auto` if automatic language detection is supported
+            across multiple languages within a single audio file.
+          items:
+            type: string
+          example: ["en-US", "en-GB", "es-ES", "fr-FR", "auto"]
+        punctuation:
+          type: boolean
+          nullable: true
+          description: Indicates whether the model generally supports automatic punctuation insertion.
+          example: true
+        diarization:
+          type: boolean
+          nullable: true
+          description: Indicates whether the model generally supports speaker diarization (identifying different speakers).
+          example: true
+        streamable:
+          type: boolean
+          nullable: true
+          description: Indicates whether the model can be used for real-time streaming transcription via a WebSocket connection (if offered by Speechall).
+          example: true
+        real_time_factor:
+          type: number
+          format: double
+          nullable: true
+          description: >
+            An approximate measure of processing speed for batch processing. Defined as (audio duration) / (processing time).
+            A higher value means faster processing (e.g., RTF=2 means it processes 1 second of audio in 0.5 seconds).
+            May not be available for all models or streaming scenarios.
+          example: 10.0
+        max_duration_seconds:
+          type: number
+          format: double
+          nullable: true
+          description: The maximum duration of a single audio file (in seconds) that the model can reliably process in one request. May vary by provider or plan.
+          example: 14400
+        max_file_size_bytes:
+          type: integer
+          format: int64
+          nullable: true
+          description: The maximum size of a single audio file (in bytes) that can be uploaded for processing by this model. May vary by provider or plan.
+          example: 104857600
         version:
           type: string
+          nullable: true
           description: The specific version identifier for the model.
           example: "2.0"
         release_date:
           type: string
-          format: date # or date-time if more specific
+          format: date
+          nullable: true
           description: The date when this specific version of the model was released or last updated.
           example: "2023-10-26"
         model_type:
           type: string
+          nullable: true
           description: The primary type or training domain of the model. Helps identify suitability for different audio types.
-          enum: # Example values, tailor this list to your available models
+          enum:
             - general
             - phone_call
             - video
@@ -876,91 +944,78 @@ components:
           example: "general"
         accuracy_tier:
           type: string
+          nullable: true
           description: A general indication of the model's expected accuracy level relative to other models. Not a guaranteed metric.
-          enum: # Example tiers
+          enum:
             - basic
             - standard
             - enhanced
             - premium
           example: "enhanced"
-        supported_languages:
-          type: array
-          description: >
-            A list of language codes (preferably BCP 47, e.g., "en-US", "en-GB", "es-ES")
-            supported by this model. May include `auto` if automatic language detection is supported
-            across multiple languages within a single audio file.
-          items:
-            $ref: "#/components/schemas/TranscriptLanguageCode"
-          example: ["en-US", "en-GB", "es-ES", "fr-FR", "auto"]
-        supported_output_formats:
-          type: array
-          description: A list of output formats supported by this model when the transcription result is returned.
-          items:
-            $ref: "#/components/schemas/TranscriptOutputFormat" # Ensure this schema lists formats like "text", "json", "srt", "vtt"
-          example: ["text", "json", "srt", "vtt"]
         supported_audio_encodings:
           type: array
+          nullable: true
           description: A list of audio encodings that this model supports or is optimized for (e.g., LINEAR16, FLAC, MP3, Opus).
           items:
             type: string
           example: ["LINEAR16", "FLAC", "MP3", "Opus"]
         supported_sample_rates:
           type: array
+          nullable: true
           description: A list of audio sample rates (in Hz) that this model supports or is optimized for.
           items:
             type: integer
           example: [8000, 16000, 44100]
-        streamable:
-          type: boolean
-          description: Indicates whether the model can be used for real-time streaming transcription via a WebSocket connection (if offered by Speechall).
-        punctuation:
-          type: boolean
-          description: Indicates whether the model generally supports automatic punctuation insertion.
-        diarization:
-          type: boolean
-          description: Indicates whether the model generally supports speaker diarization (identifying different speakers).
         speaker_labels:
           type: boolean
+          nullable: true
           description: Indicates whether the model can provide speaker labels for the transcription.
+          example: true
         word_timestamps:
           type: boolean
+          nullable: true
           description: Indicates whether the model can provide timestamps for individual words.
+          example: true
         confidence_scores:
           type: boolean
+          nullable: true
           description: Indicates whether the model provides confidence scores for the transcription or individual words.
+          example: true
         language_detection:
           type: boolean
-          description: Indicates whether the model supports automatic language detection for input audio. This might differ from `supported_languages` including `auto` if it only detects *the* language vs. supporting auto-detection across a list *it* supports. Clarify as needed.
+          nullable: true
+          description: Indicates whether the model supports automatic language detection for input audio.
+          example: true
         custom_vocabulary_support:
           type: boolean
+          nullable: true
           description: Indicates if the model can leverage a custom vocabulary or language model adaptation.
+          example: false
         profanity_filtering:
           type: boolean
+          nullable: true
           description: Indicates if the model supports filtering or masking of profanity.
+          example: true
         noise_reduction:
           type: boolean
+          nullable: true
           description: Indicates if the model supports noise reduction.
-        real_time_factor:
-          type: number
-          format: double
-          description: >
-            An approximate measure of processing speed for batch processing. Defined as (audio duration) / (processing time).
-            A higher value means faster processing (e.g., RTF=2 means it processes 1 second of audio in 0.5 seconds).
-            May not be available for all models or streaming scenarios.
-          example: 10.0
-        max_duration_seconds:
-          type: number
-          format: double
-          description: The maximum duration of a single audio file (in seconds) that the model can reliably process in one request. May vary by provider or plan.
-          example: 14400 # 4 hours
-        max_file_size_bytes:
-          type: number
-          format: integer # Integer is likely sufficient and more accurate for bytes
-          description: The maximum size of a single audio file (in bytes) that can be uploaded for processing by this model. May vary by provider or plan.
-          example: 104857600 # 100 MB (100 * 1024 * 1024)
-      required:
-        - identifier
-        - provider
+          example: true
+        supports_srt:
+          type: boolean
+          description: Indicates whether the model supports SRT subtitle format output.
+          default: false
+          example: true
+        supports_vtt:
+          type: boolean
+          description: Indicates whether the model supports VTT subtitle format output.
+          default: false
+          example: true
+        voice_activity_detection:
+          type: boolean
+          nullable: true
+          description: Indicates whether the model supports voice activity detection (VAD) to identify speech segments.
+          example: true
 
     OpenAI_CreateTranscriptionRequest:
       type: object
