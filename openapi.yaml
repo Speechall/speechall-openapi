@@ -466,6 +466,8 @@ components:
         - amazon.transcribe
         - assemblyai.best
         - assemblyai.nano
+        - assemblyai.slam-1
+        - assemblyai.universal
         - azure.standard
         - cloudflare.whisper
         - deepgram.base
