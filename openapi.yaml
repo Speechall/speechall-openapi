@@ -180,7 +180,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/TranscriptionOptions"
+              $ref: "#/components/schemas/RemoteTranscriptionConfiguration"
             example:
               file_url: "https://example.com/path/to/audio.mp3"
               model: "openai.whisper-1"
@@ -484,6 +484,8 @@ components:
         - deepgram.enhanced-meeting
         - deepgram.enhanced-phonecall
         - deepgram.nova
+        - deepgram.nova-general
+        - deepgram.nova-phonecall
         - deepgram.nova-2
         - deepgram.nova-2-atc
         - deepgram.nova-2-automotive
@@ -497,14 +499,16 @@ components:
         - deepgram.nova-2-video
         - deepgram.nova-2-voicemail
         - deepgram.nova-3
-        - deepgram.nova-general
-        - deepgram.nova-phonecall
+        - deepgram.nova-3-general
+        - deepgram.nova-3-medical
         - deepgram.whisper
         - deepgram.whisper-base
         - deepgram.whisper-large
         - deepgram.whisper-medium
         - deepgram.whisper-small
         - deepgram.whisper-tiny
+        - falai.elevenlabs-speech-to-text
+        - falai.speech-to-text
         - falai.whisper
         - falai.wizper
         - fireworksai.whisper-v3
@@ -519,7 +523,9 @@ components:
         - openai.whisper-1
         - openai.gpt-4o-transcribe
         - openai.gpt-4o-mini-transcribe
+        # - revai.low_cost
         - revai.machine
+        - revai.fusion
         - speechmatics.enhanced
         - speechmatics.standard
 
