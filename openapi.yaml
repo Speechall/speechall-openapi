@@ -470,6 +470,8 @@ components:
         - assemblyai.universal
         - azure.standard
         - cloudflare.whisper
+        - cloudflare.whisper-large-v3-turbo
+        - cloudflare.whisper-tiny-en
         - deepgram.base
         - deepgram.base-conversationalai
         - deepgram.base-finance
