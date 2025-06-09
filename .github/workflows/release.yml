@@ -24,25 +24,33 @@ jobs:
 
       - name: Determine Version Bump Type
         id: bump_type
+        # We pass the labels as a JSON string into the shell environment
+        env:
+          LABELS: ${{ toJSON(github.event.pull_request.labels) }}
         run: |
-          # Default to patch if no label is found
-          BUMP="patch"
-          if contains(github.event.pull_request.labels.*.name, 'semver:major'); then
+          echo "All labels: $LABELS"
+          BUMP="patch" # Default to patch
+          
+          # We use the 'jq' command to parse the JSON and check for label names.
+          # The '-e' flag makes jq exit with a status code of 0 if the filter produces output, perfect for 'if' conditions.
+          if echo "$LABELS" | jq -e 'map(.name) | contains(["semver:major"])' > /dev/null; then
             BUMP="major"
-          elif contains(github.event.pull_request.labels.*.name, 'semver:minor'); then
+          elif echo "$LABELS" | jq -e 'map(.name) | contains(["semver:minor"])' > /dev/null; then
             BUMP="minor"
           fi
+          
+          echo "Determined bump type: $BUMP"
           echo "BUMP_TYPE=${BUMP}" >> $GITHUB_OUTPUT
-        shell: bash
 
       - name: Get New Tag
         id: tag_version
         uses: mathieudutour/github-tag-action@v6.1
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          default_bump: "patch" # Failsafe if the logic above fails
-          release_branches: "main" # Only create tags on the main branch
-          custom_release_rules: ":${{ steps.bump_type.outputs.BUMP_TYPE }}" # Force the bump type based on our label logic
+          default_bump: "none" # We control the bump type ourselves now
+          release_branches: "main"
+          # Here we use the output from our corrected step above
+          custom_release_rules: ":${{ steps.bump_type.outputs.BUMP_TYPE }}"
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
@@ -55,7 +63,7 @@ jobs:
           body: |
             ## Release from Pull Request #${{ github.event.pull_request.number }}
             **Title:** ${{ github.event.pull_request.title }}
-
+            
             ${{ github.event.pull_request.body }}
           # Mark it as a pre-release if the PR was a draft, otherwise a full release
           prerelease: ${{ github.event.pull_request.draft }}
