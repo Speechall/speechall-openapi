@@ -1,0 +1,137 @@
+asyncapi: 2.6.0
+info:
+  title: Speechall WebSocket API
+  description: |
+    WebSocket API for real-time speech-to-text capabilities.
+    This API provides a WebSocket endpoint for streaming audio and receiving transcription results,
+    mirroring the functionality of the /transcribe REST endpoint.
+    The format of the received transcription (JSON or plain text) depends on the 'output_format'
+    parameter specified during the WebSocket connection.
+  version: 0.0.1
+  termsOfService: https://speechall.com/terms
+  contact:
+    name: Speechall Support
+    url: https://speechall.com/contact
+  license:
+    name: MIT
+    url: https://github.com/Speechall/speechall-openapi/blob/main/LICENSE
+
+servers:
+  production:
+    url: wss://api.speechall.com/v1
+    protocol: websocket
+    description: Production WebSocket server for Speechall API version 1.
+
+channels:
+  /transcribe:
+    description: >
+      WebSocket channel for real-time audio transcription.
+      Connection parameters (query parameters) are used to configure the transcription session.
+      The client publishes (sends) audio chunks, and subscribes to (receives) transcription results from the server.
+      The 'output_format' parameter dictates whether transcription chunks are sent as JSON or plain text.
+    parameters:
+      model:
+        $ref: './openapi.yaml#/components/schemas/TranscriptionModelIdentifier'
+        description: "The identifier of the speech-to-text model to use (e.g., provider.model). Passed at connection."
+      language:
+        $ref: './openapi.yaml#/components/schemas/TranscriptLanguageCode'
+        description: "Language of the audio in ISO 639-1 format (e.g., en, es). 'auto' for detection. Passed at connection. Defaults to 'en'."
+      output_format:
+        $ref: './openapi.yaml#/components/schemas/TranscriptOutputFormat'
+        description: "Desired format for the transcription output content (e.g., text, json, verbose_json). Influences the structure and content type of received messages. Passed at connection. Defaults to 'text'."
+      ruleset_id:
+        schema:
+          type: string
+          format: uuid
+        description: "UUID of a pre-defined replacement ruleset to apply. Passed at connection."
+      punctuation:
+        schema:
+          type: boolean
+          default: true
+        description: "Enable automatic punctuation. Passed at connection. Defaults to true."
+      timestamp_granularity: # Note: Deprecated in your OpenAPI
+        schema:
+          type: string
+          enum: [word, segment]
+          default: segment
+        description: "Level of detail for timestamps (word or segment). Passed at connection. Defaults to 'segment'."
+      diarization:
+        schema:
+          type: boolean
+          default: false
+        description: "Enable speaker diarization. Passed at connection. Defaults to false."
+      initial_prompt:
+        schema:
+          type: string
+        description: "Optional text prompt to guide the model. Passed at connection."
+      temperature:
+        schema:
+          type: number
+          minimum: 0
+          maximum: 1
+        description: "Controls randomness of the output (0-1). Passed at connection."
+      smart_format:
+        schema:
+          type: boolean
+        description: "Enable provider-specific smart formatting. Passed at connection."
+      speakers_expected:
+        schema:
+          type: integer
+          minimum: 1
+          maximum: 10
+        description: "Hint for the expected number of speakers. Passed at connection."
+      custom_vocabulary:
+        schema:
+          type: array
+          items:
+            type: string
+          example: ["Speechall", "Actondon"]
+        description: "List of specific words or phrases to improve recognition. Passed at connection."
+
+    publish: # Describes messages the client sends to the server
+      summary: Send an audio chunk for transcription.
+      operationId: sendAudioChunk
+      message:
+        $ref: '#/components/messages/audioChunk'
+
+    subscribe: # Describes messages the client receives from the server
+      summary: Receive a transcription chunk from the server. The format (JSON or plain text) depends on the 'output_format' connection parameter.
+      operationId: receiveTranscriptionChunk
+      message:
+        oneOf: # The message will be one of these types
+          - $ref: '#/components/messages/jsonTranscriptionChunk'
+          - $ref: '#/components/messages/textTranscriptionChunk'
+
+components:
+  messages:
+    jsonTranscriptionChunk:
+      summary: A JSON-formatted transcription chunk from the server.
+      description: >
+        The payload structure is based on the 'TranscriptionResponse' schema from the OpenAPI definition.
+        This is sent when 'output_format' (e.g., 'json', 'json_text') indicates a JSON response.
+      contentType: 'application/json'
+      payload:
+        # References the schema for application/json from DualFormatTranscriptionResponse
+        $ref: './openapi.yaml#/components/responses/DualFormatTranscriptionResponse/content/application~1json/schema'
+
+    textTranscriptionChunk:
+      summary: A plain text transcription chunk from the server.
+      description: >
+        The payload is a simple string containing the transcribed text.
+        This is sent when 'output_format' is 'text'.
+      contentType: 'text/plain'
+      payload:
+        # References the schema for text/plain from DualFormatTranscriptionResponse
+        $ref: './openapi.yaml#/components/responses/DualFormatTranscriptionResponse/content/text~1plain/schema'
+
+    audioChunk:
+      summary: An audio chunk sent by the client to the server.
+      payload:
+        type: string
+        format: binary
+        description: >
+          Raw binary audio data chunk. The specific audio format (e.g., WAV, MP3, FLAC)
+          should be known or negotiated by the application, consistent with server capabilities.
+
+  # Schemas are primarily referenced from the openapi.yaml file.
+  # The payload definitions above point directly to the relevant parts of your OpenAPI spec.

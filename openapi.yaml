@@ -6,7 +6,7 @@ info:
     It allows you to transcribe audio files using various underlying STT providers and models,
     optionally apply custom text replacement rules, and access results in multiple formats.
     The API includes standard endpoints for transcription and endpoints compatible with the OpenAI API structure.
-  version: 0.0.1
+  version: 0.1.0
   termsOfService: https://speechall.com/terms
   contact:
     name: Speechall Support
@@ -78,6 +78,7 @@ paths:
             type: string
             enum: [word, segment]
             default: segment
+          deprecated: true
           description: Specifies the level of detail for timestamps in the response (if `output_format` is `json` or `verbose_json`). `segment` provides timestamps for larger chunks of speech, while `word` provides timestamps for individual words (may increase latency). Defaults to `segment`.
         - in: query
           name: diarization
@@ -150,6 +151,8 @@ paths:
           $ref: "#/components/responses/BadRequest"
         "401":
           $ref: "#/components/responses/Unauthorized"
+        "402":
+          $ref: "#/components/responses/PaymentRequired"
         "404":
           $ref: "#/components/responses/NotFound" # Could be for an invalid ruleset_id
         "429":
@@ -177,7 +180,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/TranscriptionOptions"
+              $ref: "#/components/schemas/RemoteTranscriptionConfiguration"
             example:
               file_url: "https://example.com/path/to/audio.mp3"
               model: "openai.whisper-1"
@@ -192,6 +195,8 @@ paths:
           $ref: "#/components/responses/BadRequest"
         "401":
           $ref: "#/components/responses/Unauthorized"
+        "402":
+          $ref: "#/components/responses/PaymentRequired"
         "404":
           $ref: "#/components/responses/NotFound" # Could be if the remote URL is invalid/inaccessible
         "429":
@@ -240,32 +245,12 @@ paths:
               schema:
                 type: string
                 example: "This is the transcribed text."
-            application/srt: # Correct MIME type for SRT
-              schema:
-                type: string
-                example: |
-                  1
-                  00:00:01,000 --> 00:00:03,500
-                  This is the first segment.
-
-                  2
-                  00:00:04,100 --> 00:00:06,800
-                  This is the second segment.
-            text/vtt: # Common MIME type for VTT
-              schema:
-                type: string
-                example: |
-                  WEBVTT
-
-                  00:01.000 --> 00:03.500
-                  This is the first segment.
-
-                  00:04.100 --> 00:06.800
-                  This is the second segment.
         "400":
           $ref: "#/components/responses/BadRequest"
         "401":
           $ref: "#/components/responses/Unauthorized"
+        "402":
+          $ref: "#/components/responses/PaymentRequired"
         "404":
           $ref: "#/components/responses/NotFound"
         "429":
@@ -313,32 +298,12 @@ paths:
               schema:
                 type: string
                 example: "This is the translated English text."
-            application/srt:
-              schema:
-                type: string
-                example: |
-                  1
-                  00:00:01,000 --> 00:00:05,000
-                  This is the translated first segment.
-
-                  2
-                  00:00:06,100 --> 00:00:09,800
-                  And the second translated segment.
-            text/vtt:
-              schema:
-                type: string
-                example: |
-                  WEBVTT
-
-                  00:01.000 --> 00:05.000
-                  This is the translated first segment.
-
-                  00:06.100 --> 00:09.800
-                  And the second translated segment.
         "400":
           $ref: "#/components/responses/BadRequest"
         "401":
           $ref: "#/components/responses/Unauthorized"
+        "402":
+          $ref: "#/components/responses/PaymentRequired"
         "404":
           $ref: "#/components/responses/NotFound"
         "429":
@@ -411,6 +376,8 @@ paths:
           $ref: "#/components/responses/BadRequest"
         "401":
           $ref: "#/components/responses/Unauthorized"
+        "402":
+          $ref: "#/components/responses/PaymentRequired"
         "429":
           $ref: "#/components/responses/TooManyRequests"
         "500":
@@ -458,6 +425,8 @@ paths:
           $ref: "#/components/responses/BadRequest"
         "401":
           $ref: "#/components/responses/Unauthorized"
+        "402":
+          $ref: "#/components/responses/PaymentRequired"
         "404":
           $ref: "#/components/responses/NotFound"
         "429":
@@ -482,6 +451,7 @@ components:
         - deepgram
         - falai
         - fireworksai
+        - gemini
         - gladia
         - google
         - groq
@@ -497,8 +467,12 @@ components:
         - amazon.transcribe
         - assemblyai.best
         - assemblyai.nano
+        - assemblyai.slam-1
+        - assemblyai.universal
         - azure.standard
         - cloudflare.whisper
+        - cloudflare.whisper-large-v3-turbo
+        - cloudflare.whisper-tiny-en
         - deepgram.base
         - deepgram.base-conversationalai
         - deepgram.base-finance
@@ -513,6 +487,8 @@ components:
         - deepgram.enhanced-meeting
         - deepgram.enhanced-phonecall
         - deepgram.nova
+        - deepgram.nova-general
+        - deepgram.nova-phonecall
         - deepgram.nova-2
         - deepgram.nova-2-atc
         - deepgram.nova-2-automotive
@@ -526,14 +502,16 @@ components:
         - deepgram.nova-2-video
         - deepgram.nova-2-voicemail
         - deepgram.nova-3
-        - deepgram.nova-general
-        - deepgram.nova-phonecall
+        - deepgram.nova-3-general
+        - deepgram.nova-3-medical
         - deepgram.whisper
         - deepgram.whisper-base
         - deepgram.whisper-large
         - deepgram.whisper-medium
         - deepgram.whisper-small
         - deepgram.whisper-tiny
+        - falai.elevenlabs-speech-to-text
+        - falai.speech-to-text
         - falai.whisper
         - falai.wizper
         - fireworksai.whisper-v3
@@ -541,6 +519,10 @@ components:
         - gladia.standard
         - google.enhanced
         - google.standard
+        - gemini.gemini-2.5-flash-preview-05-20
+        - gemini.gemini-2.5-pro-preview-06-05
+        - gemini.gemini-2.0-flash
+        - gemini.gemini-2.0-flash-lite
         - groq.distil-whisper-large-v3-en
         - groq.whisper-large-v3
         - groq.whisper-large-v3-turbo
@@ -548,22 +530,16 @@ components:
         - openai.whisper-1
         - openai.gpt-4o-transcribe
         - openai.gpt-4o-mini-transcribe
+        # - revai.low_cost
         - revai.machine
+        - revai.fusion
         - speechmatics.enhanced
         - speechmatics.standard
 
-    TranscriptionOptions:
+    BaseTranscriptionConfiguration:
       type: object
-      description: Configuration options for transcribing audio specified by a remote URL via the `/transcribe-remote` endpoint.
-      required:
-        - file_url
-        - model
+      description: Common configuration options for transcription, applicable to both direct uploads and remote URLs.
       properties:
-        file_url:
-          type: string
-          format: uri
-          description: The publicly accessible URL of the audio file to transcribe. The API server must be able to fetch the audio from this URL.
-          example: "https://files.speechall.com/samples/sample.wav"
         model:
           $ref: "#/components/schemas/TranscriptionModelIdentifier"
           description: The identifier of the speech-to-text model to use.
@@ -573,6 +549,10 @@ components:
         output_format:
           $ref: "#/components/schemas/TranscriptOutputFormat"
           description: The desired format for the transcription output. Defaults to `text`.
+        ruleset_id:
+          type: string
+          format: uuid
+          description: The unique identifier (UUID) of a pre-defined replacement ruleset to apply to the final transcription text.
         punctuation:
           type: boolean
           default: true
@@ -608,11 +588,28 @@ components:
             type: string
           description: List of custom words/phrases to improve recognition (e.g., Deepgram, AssemblyAI).
           example: ["Speechall", "Actondon", "HIPAA"]
-        replacement_ruleset:
-          type: array
-          items:
-            $ref: '#/components/schemas/ReplacementRule'
-          description: An array of replacement rules to be applied directly to this transcription request, in order. This allows defining rules inline instead of using a pre-saved `ruleset_id`.
+      required:
+        - model
+
+    RemoteTranscriptionConfiguration:
+      type: object
+      description: Configuration options for transcribing audio specified by a remote URL via the `/transcribe-remote` endpoint.
+      allOf:
+        - $ref: "#/components/schemas/BaseTranscriptionConfiguration"
+        - type: object
+          required:
+            - file_url
+          properties:
+            file_url:
+              type: string
+              format: uri
+              description: The publicly accessible URL of the audio file to transcribe. The API server must be able to fetch the audio from this URL.
+              example: "https://files.speechall.com/samples/sample.wav"
+            replacement_ruleset: # This allows inline rules, complementing ruleset_id from BaseTranscriptionConfiguration
+              type: array
+              items:
+                $ref: '#/components/schemas/ReplacementRule'
+              description: An array of replacement rules to be applied directly to this transcription request, in order. This allows defining rules inline instead of (or in addition to) using a pre-saved `ruleset_id`.
 
     TranscriptLanguageCode:
       type: string
@@ -789,12 +786,17 @@ components:
           description: An array of transcribed segments, providing time-coded chunks of the transcription. The level of detail (word vs. segment timestamps) depends on the `timestamp_granularity` request parameter. May include speaker labels if diarization was enabled.
           items:
             $ref: '#/components/schemas/TranscriptionSegment'
+        words:
+          type: array
+          description: An array of transcribed words, providing time-coded chunks of the transcription. The level of detail (word vs. segment timestamps) depends on the `timestamp_granularity` request parameter. May include speaker labels if diarization was enabled.
+          items:
+            $ref: '#/components/schemas/TranscriptionWord'
         # Provider-specific response data
         provider_metadata:
           type: object
           additionalProperties: true
           description: An optional object containing additional metadata returned directly from the underlying STT provider. The structure of this object is provider-dependent.
-          example: { "deepgram_request_id": "abc-123", "confidence": 0.98 }
+          deprecated: true
     TranscriptionResponse:
       description: Represents the JSON structure returned when a JSON-based `output_format` (`json` or `json_text`) is requested. It can be either a detailed structure or a simple text-only structure.
       oneOf:
@@ -828,67 +830,220 @@ components:
           format: double
           description: The model's confidence score for the transcription of this segment, typically between 0 and 1 (if provided by the model).
           example: 0.95
+    TranscriptionWord:
+      type: object
+      description: Represents a word in the transcription, providing time-coded chunks of the transcription.
+      properties:
+        start:
+          type: number
+          format: double # Allow for fractional seconds
+          description: The start time of the word in seconds from the beginning of the audio.
+          example: 0.5
+        end:
+          type: number
+          format: double # Allow for fractional seconds
+          description: The end time of the word in seconds from the beginning of the audio.
+          example: 4.25
+        word:
+          type: string
+          description: The transcribed word.
+          example: "Hello"
+        speaker:
+          type: string
+          description: An identifier for the speaker of this word, present if diarization was enabled and successful.
+          example: "Speaker 0"
+        confidence:
+          type: number
+          format: double
+          description: The model's confidence score for the transcription of this word, typically between 0 and 1 (if provided by the model).
+          example: 0.95
+      required:
+        - word
+        - start
+        - end
 
     SpeechToTextModel:
       type: object
-      description: Describes an available speech-to-text model, its provider, and its capabilities.
+      description: Describes an available speech-to-text model, its provider, capabilities, and characteristics.
+      required:
+        - id
+        - display_name
+        - provider
+        - is_available
+        - supports_srt
+        - supports_vtt
       properties:
-        provider:
-          $ref: "#/components/schemas/TranscriptionProvider"
-          description: The provider of this model.
-        model:
+        id:
           $ref: "#/components/schemas/TranscriptionModelIdentifier"
           description: The unique identifier for this model (`provider.model_name`).
         display_name:
           type: string
           description: A user-friendly name for the model.
           example: "Deepgram Nova 2 - General"
+        provider:
+          $ref: "#/components/schemas/TranscriptionProvider"
+          description: The provider of this model.
         description:
           type: string
-          description: A brief description of the model, its intended use case, or version.
-          example: "Deepgram's latest general-purpose transcription model."
+          nullable: true
+          description: A brief description of the model, its intended use case, or version notes.
+          example: "Deepgram's latest general-purpose transcription model, optimized for various audio types."
+        cost_per_second_usd:
+          type: number
+          format: double
+          nullable: true
+          description: The cost per second of audio processed in USD.
+          example: 0.0043
+        is_available:
+          type: boolean
+          description: Indicates whether the model is currently available for use.
+          default: true
+          example: true
         supported_languages:
           type: array
-          description: A list of language codes (ISO 639-1) supported by this model. May include `auto` if automatic detection is supported.
+          nullable: true
+          description: >
+            A list of language codes (preferably BCP 47, e.g., "en-US", "en-GB", "es-ES")
+            supported by this model. May include `auto` if automatic language detection is supported
+            across multiple languages within a single audio file.
           items:
-            $ref: "#/components/schemas/TranscriptLanguageCode"
-          example: ["en", "es", "fr", "auto"]
-        supported_formats:
-          type: array
-          description: A list of output formats supported by this model when used via Speechall.
-          items:
-            $ref: "#/components/schemas/TranscriptOutputFormat"
-          example: ["text", "json", "json_text", "srt", "vtt"]
+            type: string
+          example: ["en-US", "en-GB", "es-ES", "fr-FR", "auto"]
         punctuation:
           type: boolean
-          description: Indicates whether the model generally supports automatic punctuation.
+          nullable: true
+          description: Indicates whether the model generally supports automatic punctuation insertion.
+          example: true
         diarization:
           type: boolean
-          description: Indicates whether the model generally supports speaker diarization.
+          nullable: true
+          description: Indicates whether the model generally supports speaker diarization (identifying different speakers).
+          example: true
         streamable:
           type: boolean
+          nullable: true
           description: Indicates whether the model can be used for real-time streaming transcription via a WebSocket connection (if offered by Speechall).
+          example: true
         real_time_factor:
           type: number
           format: double
-          description: An approximate measure of processing speed. Defined as (audio duration) / (processing time). A higher value means faster processing (e.g., RTF=2 means it processes 1 second of audio in 0.5 seconds). May not be available for all models.
+          nullable: true
+          description: >
+            An approximate measure of processing speed for batch processing. Defined as (audio duration) / (processing time).
+            A higher value means faster processing (e.g., RTF=2 means it processes 1 second of audio in 0.5 seconds).
+            May not be available for all models or streaming scenarios.
           example: 10.0
-        max_duration:
+        max_duration_seconds:
           type: number
           format: double
+          nullable: true
           description: The maximum duration of a single audio file (in seconds) that the model can reliably process in one request. May vary by provider or plan.
-          example: 14400 # 4 hours
-        max_file_size:
-          type: number
-          format: double # Using double to potentially represent large numbers accurately, though integer might suffice. Treat as bytes.
+          example: 14400
+        max_file_size_bytes:
+          type: integer
+          format: int64
+          nullable: true
           description: The maximum size of a single audio file (in bytes) that can be uploaded for processing by this model. May vary by provider or plan.
-          example: 104857600 # 100 MB
-      required:
-        - provider
-        - model
-        - display_name # Assuming display name is essential
-        # Other fields might be considered required depending on how complete the data is
-
+          example: 104857600
+        version:
+          type: string
+          nullable: true
+          description: The specific version identifier for the model.
+          example: "2.0"
+        release_date:
+          type: string
+          format: date
+          nullable: true
+          description: The date when this specific version of the model was released or last updated.
+          example: "2023-10-26"
+        model_type:
+          type: string
+          nullable: true
+          description: The primary type or training domain of the model. Helps identify suitability for different audio types.
+          enum:
+            - general
+            - phone_call
+            - video
+            - command_and_search
+            - medical
+            - legal
+            - voicemail
+            - meeting
+          example: "general"
+        accuracy_tier:
+          type: string
+          nullable: true
+          description: A general indication of the model's expected accuracy level relative to other models. Not a guaranteed metric.
+          enum:
+            - basic
+            - standard
+            - enhanced
+            - premium
+          example: "enhanced"
+        supported_audio_encodings:
+          type: array
+          nullable: true
+          description: A list of audio encodings that this model supports or is optimized for (e.g., LINEAR16, FLAC, MP3, Opus).
+          items:
+            type: string
+          example: ["LINEAR16", "FLAC", "MP3", "Opus"]
+        supported_sample_rates:
+          type: array
+          nullable: true
+          description: A list of audio sample rates (in Hz) that this model supports or is optimized for.
+          items:
+            type: integer
+          example: [8000, 16000, 44100]
+        speaker_labels:
+          type: boolean
+          nullable: true
+          description: Indicates whether the model can provide speaker labels for the transcription.
+          example: true
+        word_timestamps:
+          type: boolean
+          nullable: true
+          description: Indicates whether the model can provide timestamps for individual words.
+          example: true
+        confidence_scores:
+          type: boolean
+          nullable: true
+          description: Indicates whether the model provides confidence scores for the transcription or individual words.
+          example: true
+        language_detection:
+          type: boolean
+          nullable: true
+          description: Indicates whether the model supports automatic language detection for input audio.
+          example: true
+        custom_vocabulary_support:
+          type: boolean
+          nullable: true
+          description: Indicates if the model can leverage a custom vocabulary or language model adaptation.
+          example: false
+        profanity_filtering:
+          type: boolean
+          nullable: true
+          description: Indicates if the model supports filtering or masking of profanity.
+          example: true
+        noise_reduction:
+          type: boolean
+          nullable: true
+          description: Indicates if the model supports noise reduction.
+          example: true
+        supports_srt:
+          type: boolean
+          description: Indicates whether the model supports SRT subtitle format output.
+          default: false
+          example: true
+        supports_vtt:
+          type: boolean
+          description: Indicates whether the model supports VTT subtitle format output.
+          default: false
+          example: true
+        voice_activity_detection:
+          type: boolean
+          nullable: true
+          description: Indicates whether the model supports voice activity detection (VAD) to identify speech segments.
+          example: true
 
     OpenAI_CreateTranscriptionRequest:
       type: object
@@ -1292,7 +1447,6 @@ components:
         Successful transcription response. The content type and structure depend on the `output_format` parameter specified in the request.
         - `application/json`: Returned for `output_format=json` or `json_text`. See `TranscriptionResponse` schema (`TranscriptionDetailed` or `TranscriptionOnlyText`).
         - `text/plain`: Returned for `output_format=text`.
-        - `application/srt` or `text/vtt`: Returned for `output_format=srt` or `vtt` respectively (as plain text).
       content:
         application/json:
           schema:
@@ -1302,30 +1456,6 @@ components:
             type: string
             description: The transcription output as plain text (used for `output_format=text`).
             example: "This is the full transcription text."
-        application/srt:
-          schema:
-            type: string
-            description: The transcription in SubRip subtitle format (used for `output_format=srt`).
-            example: |
-              1
-              00:00:00,500 --> 00:00:02,100
-              Hello world.
-
-              2
-              00:00:02,500 --> 00:00:04,800
-              This is a test.
-        text/vtt: # Using text/vtt as common MIME type
-          schema:
-            type: string
-            description: The transcription in WebVTT subtitle format (used for `output_format=vtt`).
-            example: |
-              WEBVTT
-
-              00:00.500 --> 00:02.100
-              Hello world.
-
-              00:02.500 --> 00:04.800
-              This is a test.
     BadRequest:
       description: Bad Request - The request was malformed or contained invalid parameters (e.g., invalid language code, missing required field, unsupported option). The response body provides details.
       content:
@@ -1341,6 +1471,13 @@ components:
             $ref: "#/components/schemas/ErrorResponse"
           example:
             { "message": "Authentication required. No API key provided.", "code": "unauthenticated" }
+    PaymentRequired:
+      description: Payment Required - There is no credit left on your account.
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
+          example: { "message": "No credit left on your account. Please add credit to your account.", "code": "payment_required" }
     NotFound:
       description: Not Found - The requested resource could not be found. This could be an invalid API endpoint path, or a referenced resource ID (like `ruleset_id`) that doesn't exist. For `/transcribe-remote`, it could also mean the `file_url` was inaccessible.
       content:

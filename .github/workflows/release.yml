@@ -1,0 +1,61 @@
+name: Create Release on PR Merge
+
+on:
+  pull_request:
+    types:
+      - closed
+    branches:
+      - main # Only run on PRs merged into the 'main' branch
+
+jobs:
+  create-release:
+    # Only run this job if the PR was actually merged
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+    permissions:
+      # Required to read/write contents (for tagging) and create releases.
+      contents: write
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          # Fetch all history and tags to correctly determine the next version
+          fetch-depth: 0
+
+      - name: Determine Version Bump Type
+        id: bump_type
+        run: |
+          # Default to patch if no label is found
+          BUMP="patch"
+          if contains(github.event.pull_request.labels.*.name, 'semver:major'); then
+            BUMP="major"
+          elif contains(github.event.pull_request.labels.*.name, 'semver:minor'); then
+            BUMP="minor"
+          fi
+          echo "BUMP_TYPE=${BUMP}" >> $GITHUB_OUTPUT
+        shell: bash
+
+      - name: Get New Tag
+        id: tag_version
+        uses: mathieudutour/github-tag-action@v6.1
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          default_bump: "patch" # Failsafe if the logic above fails
+          release_branches: "main" # Only create tags on the main branch
+          custom_release_rules: ":${{ steps.bump_type.outputs.BUMP_TYPE }}" # Force the bump type based on our label logic
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          # The tag_name is the output from the previous step
+          tag_name: ${{ steps.tag_version.outputs.new_tag }}
+          # The release name is the same as the tag
+          name: "Release ${{ steps.tag_version.outputs.new_tag }}"
+          # Use the PR title and body for the release notes
+          body: |
+            ## Release from Pull Request #${{ github.event.pull_request.number }}
+            **Title:** ${{ github.event.pull_request.title }}
+
+            ${{ github.event.pull_request.body }}
+          # Mark it as a pre-release if the PR was a draft, otherwise a full release
+          prerelease: ${{ github.event.pull_request.draft }}
