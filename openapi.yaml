@@ -451,6 +451,7 @@ components:
         - deepgram
         - falai
         - fireworksai
+        - gemini
         - gladia
         - google
         - groq
@@ -518,6 +519,10 @@ components:
         - gladia.standard
         - google.enhanced
         - google.standard
+        - gemini.gemini-2.5-flash-preview-05-20
+        - gemini.gemini-2.5-pro-preview-06-05
+        - gemini.gemini-2.0-flash
+        - gemini.gemini-2.0-flash-lite
         - groq.distil-whisper-large-v3-en
         - groq.whisper-large-v3
         - groq.whisper-large-v3-turbo
