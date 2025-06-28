@@ -225,8 +225,9 @@ paths:
           multipart/form-data:
             schema:
               $ref: "#/components/schemas/OpenAI_CreateTranscriptionRequest"
-            # Example pseudo-request:
-            # curl ... -F file=@/path/to/audio.mp3 -F model="openai.whisper-1" -F response_format="verbose_json"
+            encoding:
+              file:
+                contentType: audio/*
       responses:
         "200":
           description: |
