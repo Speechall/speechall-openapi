@@ -29,6 +29,7 @@ channels:
       Connection parameters (query parameters) are used to configure the transcription session.
       The client publishes (sends) audio chunks, and subscribes to (receives) transcription results from the server.
       The 'output_format' parameter dictates whether transcription chunks are sent as JSON or plain text.
+      The sample rate of the audio chunks should be 16000 Hz with 16-bit PCM encoding in single channel.
     parameters:
       model:
         $ref: './openapi.yaml#/components/schemas/TranscriptionModelIdentifier'
