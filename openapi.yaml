@@ -210,6 +210,7 @@ paths:
 
   /openai-compatible/audio/transcriptions:
     post:
+      x-internal: true
       operationId: openaiCompatibleCreateTranscription
       tags:
         - OpenAI-Compatible Speech-to-Text
@@ -264,6 +265,7 @@ paths:
           $ref: "#/components/responses/GatewayTimeout"
   /openai-compatible/audio/translations:
     post:
+      x-internal: true
       operationId: openaiCompatibleCreateTranslation
       tags:
         - OpenAI-Compatible Speech-to-Text
@@ -1047,6 +1049,7 @@ components:
           example: true
 
     OpenAI_CreateTranscriptionRequest:
+      x-internal: true
       type: object
       description: Request schema for the OpenAI-compatible transcription endpoint. Uses `multipart/form-data`.
       additionalProperties: false
@@ -1105,6 +1108,7 @@ components:
         - file
         - model
     OpenAI_CreateTranscriptionResponseJson:
+      x-internal: true
       type: object
       description:
         Represents a transcription response returned by model, based on the
@@ -1116,6 +1120,7 @@ components:
       required:
         - text
     OpenAI_CreateTranscriptionResponseVerboseJson:
+      x-internal: true
       type: object
       description:
         Represents a verbose json transcription response returned by model,
@@ -1146,6 +1151,7 @@ components:
         - text
         # Segments/words presence depends on timestamp_granularities request param
     OpenAI_CreateTranslationRequest:
+      x-internal: true
       type: object
       description: Request schema for the OpenAI-compatible translation endpoint. Uses `multipart/form-data`. Translates audio into English.
       additionalProperties: false
@@ -1190,6 +1196,7 @@ components:
         - file
         - model
     OpenAI_CreateTranslationResponseJson:
+      x-internal: true
       type: object
       description: Standard JSON response for OpenAI-compatible translation requests when `response_format` is `json`. Contains the translated English text.
       properties:
@@ -1198,6 +1205,7 @@ components:
       required:
         - text
     OpenAI_CreateTranslationResponseVerboseJson:
+      x-internal: true
       type: object
       properties:
         language:
@@ -1219,6 +1227,7 @@ components:
         - duration
         - text
     OpenAI_AudioResponseFormat:
+      x-internal: true
       description: >
         The format of the output, in one of these options: `json`, `text`,
         `srt`, `verbose_json`, or `vtt`.
@@ -1231,6 +1240,7 @@ components:
         - vtt
       default: json
     OpenAI_TranscriptionSegment:
+      x-internal: true
       type: object
       description: Represents a segment of transcribed or translated text, based on OpenAI's verbose JSON structure.
       properties:
@@ -1291,6 +1301,7 @@ components:
         - compression_ratio
         - no_speech_prob
     OpenAI_TranscriptionWord:
+      x-internal: true
       type: object
       description: Represents a single word identified during transcription, including its start and end times. Included in `verbose_json` response when `word` granularity is requested.
       properties:
