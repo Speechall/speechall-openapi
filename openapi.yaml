@@ -105,6 +105,7 @@ paths:
           name: smart_format
           description: Enable provider-specific "smart formatting" features, which might include formatting for numbers, dates, currency, etc. Currently supported by Deepgram models. Defaults vary.
           required: false
+          deprecated: true
           schema:
             type: boolean
         - in: query
@@ -579,6 +580,7 @@ components:
           description: Controls output randomness for supported models (e.g., OpenAI). Value between 0 and 1.
         smart_format:
           type: boolean
+          deprecated: true
           description: Enable provider-specific smart formatting (e.g., Deepgram). Defaults vary.
         speakers_expected:
           type: integer

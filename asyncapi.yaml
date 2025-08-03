@@ -50,12 +50,6 @@ channels:
           type: boolean
           default: true
         description: "Enable automatic punctuation. Passed at connection. Defaults to true."
-      timestamp_granularity: # Note: Deprecated in your OpenAPI
-        schema:
-          type: string
-          enum: [word, segment]
-          default: segment
-        description: "Level of detail for timestamps (word or segment). Passed at connection. Defaults to 'segment'."
       diarization:
         schema:
           type: boolean
@@ -71,10 +65,6 @@ channels:
           minimum: 0
           maximum: 1
         description: "Controls randomness of the output (0-1). Passed at connection."
-      smart_format:
-        schema:
-          type: boolean
-        description: "Enable provider-specific smart formatting. Passed at connection."
       speakers_expected:
         schema:
           type: integer
