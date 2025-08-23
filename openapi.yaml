@@ -460,6 +460,7 @@ components:
         - google
         - groq
         - ibm
+        - mistral
         - openai
         - revai
         - speechmatics
@@ -531,6 +532,7 @@ components:
         - groq.whisper-large-v3
         - groq.whisper-large-v3-turbo
         - ibm.standard
+        - mistral.voxtral-mini
         - openai.whisper-1
         - openai.gpt-4o-transcribe
         - openai.gpt-4o-mini-transcribe
