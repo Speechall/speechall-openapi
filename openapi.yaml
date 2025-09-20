@@ -453,6 +453,7 @@ components:
         - azure
         - cloudflare
         - deepgram
+        - elevenlabs
         - falai
         - fireworksai
         - gemini
@@ -515,6 +516,7 @@ components:
         - deepgram.whisper-medium
         - deepgram.whisper-small
         - deepgram.whisper-tiny
+        - elevenlabs.scribe-v1
         - falai.elevenlabs-speech-to-text
         - falai.speech-to-text
         - falai.whisper
