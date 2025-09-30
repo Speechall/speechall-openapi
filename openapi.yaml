@@ -72,15 +72,6 @@ paths:
             type: boolean
             default: true
         - in: query
-          name: timestamp_granularity
-          required: false
-          schema:
-            type: string
-            enum: [word, segment]
-            default: segment
-          deprecated: true
-          description: Specifies the level of detail for timestamps in the response (if `output_format` is `json` or `verbose_json`). `segment` provides timestamps for larger chunks of speech, while `word` provides timestamps for individual words (may increase latency). Defaults to `segment`.
-        - in: query
           name: diarization
           required: false
           schema:
@@ -101,13 +92,6 @@ paths:
             type: number
             minimum: 0
             maximum: 1
-        - in: query
-          name: smart_format
-          description: Enable provider-specific "smart formatting" features, which might include formatting for numbers, dates, currency, etc. Currently supported by Deepgram models. Defaults vary.
-          required: false
-          deprecated: true
-          schema:
-            type: boolean
         - in: query
           name: speakers_expected
           description: Provides a hint to the diarization process about the number of expected speakers. May improve accuracy for some providers (e.g., RevAI, Deepgram).
@@ -565,11 +549,6 @@ components:
           type: boolean
           default: true
           description: Whether to add punctuation. Support varies by model (e.g., Deepgram, AssemblyAI). Defaults to `true`.
-        timestamp_granularity:
-          type: string
-          enum: [word, segment]
-          default: segment
-          description: Level of timestamp detail (`word` or `segment`). Defaults to `segment`.
         diarization:
           type: boolean
           default: false
@@ -582,10 +561,6 @@ components:
           minimum: 0
           maximum: 1
           description: Controls output randomness for supported models (e.g., OpenAI). Value between 0 and 1.
-        smart_format:
-          type: boolean
-          deprecated: true
-          description: Enable provider-specific smart formatting (e.g., Deepgram). Defaults vary.
         speakers_expected:
           type: integer
           minimum: 1
@@ -783,29 +758,16 @@ components:
           type: string
           description: The detected or specified language of the audio (ISO 639-1 code).
           example: "en"
-        duration:
-          type: number
-          format: double
-          description: |
-            The total duration of the processed audio file in seconds. **Deprecated**: This property may be removed in future versions as duration analysis might occur asynchronously. Rely on segment end times for duration information if needed.
-          deprecated: true
-          example: 15.75
         segments:
           type: array
-          description: An array of transcribed segments, providing time-coded chunks of the transcription. The level of detail (word vs. segment timestamps) depends on the `timestamp_granularity` request parameter. May include speaker labels if diarization was enabled.
+          description: An array of transcribed segments, providing time-coded chunks of the transcription. May include speaker labels if diarization was enabled.
           items:
             $ref: '#/components/schemas/TranscriptionSegment'
         words:
           type: array
-          description: An array of transcribed words, providing time-coded chunks of the transcription. The level of detail (word vs. segment timestamps) depends on the `timestamp_granularity` request parameter. May include speaker labels if diarization was enabled.
+          description: An array of transcribed words, providing time-coded chunks of the transcription. May include speaker labels if diarization was enabled.
           items:
             $ref: '#/components/schemas/TranscriptionWord'
-        # Provider-specific response data
-        provider_metadata:
-          type: object
-          additionalProperties: true
-          description: An optional object containing additional metadata returned directly from the underlying STT provider. The structure of this object is provider-dependent.
-          deprecated: true
     TranscriptionResponse:
       description: Represents the JSON structure returned when a JSON-based `output_format` (`json` or `json_text`) is requested. It can be either a detailed structure or a simple text-only structure.
       oneOf:
