@@ -1,5 +1,5 @@
 openapi: 3.0.0
-x-fern-sdk-group-name: api
+# x-fern-sdk-group-name: api
 info:
   title: Speechall API
   description: |
@@ -525,6 +525,7 @@ components:
         - openai.whisper-1
         - openai.gpt-4o-transcribe
         - openai.gpt-4o-mini-transcribe
+        - openai.gpt-4o-transcribe-diarize
         # - revai.low_cost
         - revai.machine
         - revai.fusion
