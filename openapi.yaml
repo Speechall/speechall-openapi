@@ -7,7 +7,7 @@ info:
     It allows you to transcribe audio files using various underlying STT providers and models,
     optionally apply custom text replacement rules, and access results in multiple formats.
     The API includes standard endpoints for transcription and endpoints compatible with the OpenAI API structure.
-  version: 0.2.0
+  version: 0.3.0
   termsOfService: https://speechall.com/terms
   contact:
     name: Speechall Support
@@ -495,6 +495,8 @@ components:
         - deepgram.voicemail
         - deepgram.video
         - elevenlabs.scribe-v1
+        - falai.cohere-transcribe
+        - falai.nvidia-nemotron-asr-multilingual
         - falai.whisper
         - falai.wizper
         - fireworksai.whisper-v3
