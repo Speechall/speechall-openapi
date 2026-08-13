@@ -503,8 +503,6 @@ components:
         - falai.nvidia-nemotron-asr-multilingual
         - falai.whisper
         - falai.wizper
-        - fireworksai.whisper-v3
-        - fireworksai.whisper-v3-turbo
         - gladia.standard
         - google.enhanced
         - google.standard
