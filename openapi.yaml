@@ -7,7 +7,7 @@ info:
     It allows you to transcribe audio files using various underlying STT providers and models,
     optionally apply custom text replacement rules, and access results in multiple formats.
     The API includes standard endpoints for transcription and endpoints compatible with the OpenAI API structure.
-  version: 0.5.0
+  version: 0.6.0
   termsOfService: https://speechall.com/terms
   contact:
     name: Speechall Support
@@ -42,7 +42,7 @@ paths:
           name: model
           required: true
           schema:
-            $ref: "#/components/schemas/TranscriptionModelIdentifier"
+            $ref: "#/components/schemas/OpenTranscriptionModelIdentifier"
           description: The identifier of the speech-to-text model to use for the transcription, in the format `provider.model`. See the `/speech-to-text-models` endpoint for available models.
         - in: query
           name: language
@@ -400,7 +400,7 @@ paths:
                   $ref: "#/components/schemas/SpeechToTextModel"
               example: # Example of one model in the array
                 - provider: "openai"
-                  model: "openai.whisper-1"
+                  id: "openai.whisper-1"
                   display_name: "OpenAI Whisper v2"
                   description: "OpenAI's large Whisper model (version 2)."
                   supported_languages: ["en", "es", "fr", "de", "it", "..."] # Truncated for brevity
@@ -452,6 +452,11 @@ components:
         - openai
         - revai
         - speechmatics
+    OpenTranscriptionModelIdentifier:
+      type: string
+      description: An opaque Speech-to-Text model identifier in `provider.model_name` form. Obtain currently available values from the `/speech-to-text-models` endpoint.
+      example: "openai.whisper-1"
+
     TranscriptionModelIdentifier:
       type: string
       description: Unique identifier for a specific Speech-to-Text model, composed as `provider.model_name`. Used to select the engine for transcription.
@@ -526,7 +531,7 @@ components:
       description: Common configuration options for transcription, applicable to both direct uploads and remote URLs.
       properties:
         model:
-          $ref: "#/components/schemas/TranscriptionModelIdentifier"
+          $ref: "#/components/schemas/OpenTranscriptionModelIdentifier"
           description: The identifier of the speech-to-text model to use.
         language:
           $ref: "#/components/schemas/TranscriptLanguageCode"
@@ -838,7 +843,7 @@ components:
         - supports_vtt
       properties:
         id:
-          $ref: "#/components/schemas/TranscriptionModelIdentifier"
+          $ref: "#/components/schemas/OpenTranscriptionModelIdentifier"
           description: The unique identifier for this model (`provider.model_name`).
         display_name:
           type: string
@@ -1023,7 +1028,7 @@ components:
           type: string
           format: binary
         model:
-          $ref: "#/components/schemas/TranscriptionModelIdentifier"
+          $ref: "#/components/schemas/OpenTranscriptionModelIdentifier"
           description: The Speechall model identifier (`provider.model`) to use for transcription.
         language:
           description: >
@@ -1128,15 +1133,8 @@ components:
           type: string
           format: binary
         model:
-          description: >
-            ID of the model to use. It follows the naming convention provider/model-name
-          example: openai/whisper-1
-          anyOf:
-            - type: string
-              description: A valid Speechall model identifier capable of translation.
-            - type: string
-              enum: # Explicitly listing common translation models
-                - openai.whisper-1
+          $ref: "#/components/schemas/OpenTranscriptionModelIdentifier"
+          description: A Speechall model identifier capable of translation, in `provider.model` form.
         prompt:
           description: >
             An optional text to guide the model's style or continue a previous

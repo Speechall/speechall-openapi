@@ -32,7 +32,7 @@ channels:
       The sample rate of the audio chunks should be 16000 Hz with 16-bit PCM encoding in single channel.
     parameters:
       model:
-        $ref: './openapi.yaml#/components/schemas/TranscriptionModelIdentifier'
+        $ref: './openapi.yaml#/components/schemas/OpenTranscriptionModelIdentifier'
         description: "The identifier of the speech-to-text model to use (e.g., provider.model). Passed at connection."
       language:
         $ref: './openapi.yaml#/components/schemas/TranscriptLanguageCode'
