@@ -47,10 +47,10 @@ jobs:
         uses: mathieudutour/github-tag-action@v6.1
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          default_bump: "none" # We control the bump type ourselves now
+          default_bump: ${{ steps.bump_type.outputs.BUMP_TYPE }} # We control the bump type ourselves now
           release_branches: "main"
           # Here we use the output from our corrected step above
-          custom_release_rules: ":${{ steps.bump_type.outputs.BUMP_TYPE }}"
+          custom_release_rules: "*:${{ steps.bump_type.outputs.BUMP_TYPE }}"
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
