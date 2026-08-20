@@ -450,6 +450,7 @@ components:
         - openai
         - revai
         - speechmatics
+        - xai
     OpenTranscriptionModelIdentifier:
       type: string
       description: An opaque Speech-to-Text model identifier in `provider.model_name` form. Obtain currently available values from the `/speech-to-text-models` endpoint.
@@ -517,6 +518,7 @@ components:
         - revai.machine
         - speechmatics.enhanced
         - speechmatics.standard
+        - xai.grok-stt
 
     BaseTranscriptionConfiguration:
       type: object
