@@ -449,6 +449,7 @@ components:
         - mistral
         - openai
         - revai
+        - smallestai
         - speechmatics
         - togetherai
         - xai
@@ -517,6 +518,8 @@ components:
         - openai.whisper-1
         - revai.fusion
         - revai.machine
+        - smallestai.pulse-pro
+        - smallestai.pulse
         - speechmatics.enhanced
         - speechmatics.standard
         - togetherai.nvidia-parakeet-tdt-0.6b-v3
