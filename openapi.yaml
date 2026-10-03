@@ -450,6 +450,7 @@ components:
         - openai
         - revai
         - smallestai
+        - soniox
         - speechmatics
         - togetherai
         - xai
@@ -520,6 +521,7 @@ components:
         - revai.machine
         - smallestai.pulse-pro
         - smallestai.pulse
+        - soniox.stt-async-v5
         - speechmatics.enhanced
         - speechmatics.standard
         - togetherai.nvidia-parakeet-tdt-0.6b-v3
